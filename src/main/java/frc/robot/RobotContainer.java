@@ -4,9 +4,6 @@
 
 package frc.robot;
 
-import com.kauailabs.navx.frc.AHRS;
-
-
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
@@ -29,7 +26,6 @@ Turn Command
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
 
-  public AHRS ahrs;
   public static Joystick m_oi = new Joystick(0);
   public final static Drivetrain m_drive = new Drivetrain();
   private final ArcadeDrive m_autoCommand = new ArcadeDrive();
@@ -38,7 +34,6 @@ public class RobotContainer {
     // Configure the button bindings
     configureButtonBindings();
     m_drive.setDefaultCommand(new ArcadeDrive());
-
   
   }
 

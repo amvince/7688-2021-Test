@@ -13,6 +13,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SerialPort;
+// import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.Timer;
 
 public class Drivetrain extends SubsystemBase {
   /** Creates a new drivetrain. */
@@ -23,8 +26,10 @@ public class Drivetrain extends SubsystemBase {
   private double l_rot, r_rot;
   private double x_ang, y_ang, z_ang;
   private AHRS ahrs;
+  private Timer elapsed;
 
   public Drivetrain() {
+      
       l_talon = new WPI_TalonSRX(DriveConstants.LDRIVE);
       r_talon = new WPI_TalonSRX(DriveConstants.RDRIVE);
       l_victor = new WPI_VictorSPX(DriveConstants.LDRIVE);
@@ -36,10 +41,13 @@ public class Drivetrain extends SubsystemBase {
       m_drive = new DifferentialDrive(l_talon, r_talon);
       l_encoder.reset();
       r_encoder.reset();
+      elapsed = new Timer();
+      elapsed.reset();
+      elapsed.start();
 
       try {
         ahrs = new AHRS(SerialPort.Port.kUSB);
-      
+        // ahrs = new AHRS(I2C.Port.kMXP);   
       } catch(RuntimeException ex) {
         DriverStation.reportError("Error instantiating navX-MXP:  " + ex.getMessage(), true);
       }
@@ -53,15 +61,25 @@ public class Drivetrain extends SubsystemBase {
     x_ang = ahrs.getRoll();
     y_ang = ahrs.getPitch();
     z_ang = ahrs.getYaw();
+    SmartDashboard.putNumber("IMU_CompassHeading",  ahrs.getCompassHeading());
+    SmartDashboard.putNumber("Roll",x_ang);
+    SmartDashboard.putNumber("Pitch",y_ang);
+    SmartDashboard.putNumber("Yaw:",z_ang);
 
+    SmartDashboard.putNumber("Left Encoder:",l_rot);
+    SmartDashboard.putNumber("Right Encoder:",r_rot);
+    /*
+    if (elapsed.hasPeriodPassed(.5)) {
     System.out.println("Roll: "+x_ang);
     System.out.println("Pitch: "+y_ang);
     System.out.println("Yaw: "+z_ang);
     
-    /* 
+     
     System.out.println("Left Encoder: "+l_rot);
     System.out.println("Right Encoder: "+r_rot);
-    */  
+    elapsed.reset();
+    }
+    */
 
   }
 

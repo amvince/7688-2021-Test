@@ -4,7 +4,6 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.DriveConstants;
@@ -14,7 +13,6 @@ import frc.robot.subsystems.Drivetrain;
 public class ArcadeDrive extends CommandBase {
   /** Creates a new ArcadeDrive. */
   private static Drivetrain m_drive;
-  private static Joystick m_stick;
   private static double speed = DriveConstants.MAXSPEED;
   private static double rot = DriveConstants.MAXTURN;
   
