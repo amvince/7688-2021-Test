@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SerialPort;
-// import edu.wpi.first.wpilibj.I2C;
+ import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Timer;
 
@@ -46,8 +46,9 @@ public class Drivetrain extends SubsystemBase {
       elapsed.start();
 
       try {
-        ahrs = new AHRS(SerialPort.Port.kUSB);
-        // ahrs = new AHRS(I2C.Port.kMXP);   
+        // ahrs = new AHRS(SerialPort.Port.kUSB);
+        //  ahrs = new AHRS(I2C.Port.kMXP);   
+         ahrs = new AHRS(I2C.Port.kOnboard);
       } catch(RuntimeException ex) {
         DriverStation.reportError("Error instantiating navX-MXP:  " + ex.getMessage(), true);
       }
