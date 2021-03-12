@@ -24,3 +24,4 @@ public class BarrelRun extends SequentialCommandGroup {
       new Forward(22.5*12) // Forward 22.5' (fully inside end zone)
     );
 }
+}
