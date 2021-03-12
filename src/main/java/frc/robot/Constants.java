@@ -20,10 +20,12 @@ public class Constants {
 
         final static public double WHEELBASE = 25.5; // 25.5 inch wheel base
         final static public double WHEELRADIUS = 6; // six inch wheels
+        final static public double AUTODRIVE = 0.5; // max auto speed
     }
 
     public class Input {
         final static public int JOYX = 0;
     }
+
 
 }

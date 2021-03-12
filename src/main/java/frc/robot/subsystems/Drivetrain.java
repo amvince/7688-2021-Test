@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.SerialPort;
  import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Timer;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 public class Drivetrain extends SubsystemBase {
   /** Creates a new drivetrain. */
@@ -23,7 +24,7 @@ public class Drivetrain extends SubsystemBase {
   private final WPI_VictorSPX l_victor, r_victor;
   private final Encoder r_encoder, l_encoder;
   private final DifferentialDrive m_drive;
-  private double l_rot, r_rot;
+  private double l_rot, r_rot, l_dist, r_dist;
   private double x_ang, y_ang, z_ang;
   private AHRS ahrs;
   private Timer elapsed;
@@ -41,14 +42,16 @@ public class Drivetrain extends SubsystemBase {
       m_drive = new DifferentialDrive(l_talon, r_talon);
       l_encoder.reset();
       r_encoder.reset();
+      l_encoder.setDistancePerPulse((3*3.14*2)/2048);
+      r_encoder.setDistancePerPulse((3*3.14*2)/2048);
       elapsed = new Timer();
       elapsed.reset();
       elapsed.start();
 
       try {
-        // ahrs = new AHRS(SerialPort.Port.kUSB);
+         ahrs = new AHRS(SerialPort.Port.kUSB);
         //  ahrs = new AHRS(I2C.Port.kMXP);   
-         ahrs = new AHRS(I2C.Port.kOnboard);
+         // ahrs = new AHRS(I2C.Port.kOnboard);
       } catch(RuntimeException ex) {
         DriverStation.reportError("Error instantiating navX-MXP:  " + ex.getMessage(), true);
       }
@@ -62,25 +65,17 @@ public class Drivetrain extends SubsystemBase {
     x_ang = ahrs.getRoll();
     y_ang = ahrs.getPitch();
     z_ang = ahrs.getYaw();
-    SmartDashboard.putNumber("IMU_CompassHeading",  ahrs.getCompassHeading());
+    l_dist = l_rot; //2048 * (3*6.28);
+    r_dist = r_rot; //2048 * (3*6.28);
+    // SmartDashboard.putNumber("IMU_CompassHeading",  ahrs.getCompassHeading());
     SmartDashboard.putNumber("Roll",x_ang);
     SmartDashboard.putNumber("Pitch",y_ang);
     SmartDashboard.putNumber("Yaw:",z_ang);
 
     SmartDashboard.putNumber("Left Encoder:",l_rot);
+    SmartDashboard.putNumber("Left Distance: ",l_dist);
     SmartDashboard.putNumber("Right Encoder:",r_rot);
-    /*
-    if (elapsed.hasPeriodPassed(.5)) {
-    System.out.println("Roll: "+x_ang);
-    System.out.println("Pitch: "+y_ang);
-    System.out.println("Yaw: "+z_ang);
-    
-     
-    System.out.println("Left Encoder: "+l_rot);
-    System.out.println("Right Encoder: "+r_rot);
-    elapsed.reset();
-    }
-    */
+    SmartDashboard.putNumber("Right Distance: ",r_dist);
 
   }
 
@@ -92,6 +87,22 @@ public class Drivetrain extends SubsystemBase {
     m_drive.tankDrive(left, right);
   }
 
+  public double yaw() {
+    return z_ang;
+  }
+  public double l_rot() {
+    return l_rot;
+  }
+  public double r_rot() {
+    return r_rot;
+  }
+  public double l_dist() {
+    return l_dist;
+  }
+  public double r_dist() {
+    return r_dist;
+  }
+
   public void stop() {
     m_drive.tankDrive(0,0);
   }
@@ -99,5 +110,17 @@ public class Drivetrain extends SubsystemBase {
   public void resetEncoder() {
     l_encoder.reset();
     r_encoder.reset();
+    ahrs.reset();
+  }
+
+  public void autonomous() {
+    l_talon.setNeutralMode(NeutralMode.Brake);
+    r_talon.setNeutralMode(NeutralMode.Brake);
+  }
+
+  public void teleop() {
+    l_talon.setNeutralMode(NeutralMode.Coast);
+    r_talon.setNeutralMode(NeutralMode.Coast);
+
   }
 }
